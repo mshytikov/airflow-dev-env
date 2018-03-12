@@ -1,0 +1,5 @@
+.pip
+airflow/*
+!airflow/dags
+
+docker-compose/

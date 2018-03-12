@@ -1,0 +1,11 @@
+#!/bin/bash
+set -o errexit
+
+# Install deps
+pip install --user -r requirements-dev.txt
+
+# Install deps
+airflow initdb
+
+# Run tests
+pytest

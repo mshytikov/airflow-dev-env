@@ -1,0 +1,38 @@
+version: '2'
+services:
+  common:
+    image: python:3.6
+    working_dir: /workdir
+    environment:
+      PYTHONUSERBASE: /workdir/.pip
+      PYTHONDONTWRITEBYTECODE: 1
+      PATH: "/workdir/.pip/bin/:/bin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin"
+      HISTFILE: docker-compose/.bash_history
+      AIRFLOW_HOME: /workdir/airflow
+      AIRFLOW__CORE__SQL_ALCHEMY_CONN: mysql+pymysql://root@mysql/airflow
+      AIRFLOW__CORE__EXECUTOR: LocalExecutor
+    command: ./bin/setup
+    volumes:
+      - .:/workdir
+
+  app:
+    extends: common
+    command: airflow webserver
+    links:
+      - mysql
+    ports:
+      - 8080:8080
+
+  scheduler:
+    extends: common
+    links:
+      - mysql
+    command: airflow scheduler
+
+  mysql:
+    image: mysql:5.7
+    environment:
+      MYSQL_ALLOW_EMPTY_PASSWORD: "yes"
+      MYSQL_DATABASE: airflow
+    volumes:
+      - .:/workdir

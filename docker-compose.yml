@@ -11,6 +11,7 @@ services:
       AIRFLOW_HOME: /workdir/airflow
       AIRFLOW__CORE__SQL_ALCHEMY_CONN: mysql+pymysql://root@mysql/airflow
       AIRFLOW__CORE__EXECUTOR: LocalExecutor
+      SLUGIFY_USES_TEXT_UNIDECODE: 'yes'
     command: ./bin/setup
     volumes:
       - .:/workdir

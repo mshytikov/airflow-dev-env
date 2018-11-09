@@ -3,3 +3,4 @@ airflow/*
 !airflow/dags
 
 docker-compose/
+.idea

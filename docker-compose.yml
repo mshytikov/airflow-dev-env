@@ -9,8 +9,9 @@ services:
       PATH: "/workdir/.pip/bin/:/bin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin"
       HISTFILE: docker-compose/.bash_history
       AIRFLOW_HOME: /workdir/airflow
-      AIRFLOW__CORE__SQL_ALCHEMY_CONN: mysql+pymysql://root@mysql/airflow
+      AIRFLOW__CORE__SQL_ALCHEMY_CONN: postgres+psycopg2://airflow:airflow@db/airflow
       AIRFLOW__CORE__EXECUTOR: LocalExecutor
+      AIRFLOW_GPL_UNIDECODE: 'yes'
     command: ./bin/setup
     volumes:
       - .:/workdir
@@ -19,20 +20,21 @@ services:
     extends: common
     command: airflow webserver
     links:
-      - mysql
+      - db
     ports:
       - 8080:8080
 
   scheduler:
     extends: common
     links:
-      - mysql
+      - db
     command: airflow scheduler
 
-  mysql:
-    image: mysql:5.7
+  db:
+    image: postgres:11
     environment:
-      MYSQL_ALLOW_EMPTY_PASSWORD: "yes"
-      MYSQL_DATABASE: airflow
+      POSTGRES_USER: airflow
+      POSTGRES_PASSWORD: airflow
+      POSTGRES_DB: airflow
     volumes:
       - .:/workdir

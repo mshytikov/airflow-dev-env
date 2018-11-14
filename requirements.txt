@@ -1,5 +1,5 @@
 apache-airflow
-apache-airflow[mysql]
+apache-airflow[postgres]
 apache-airflow[crypto]
 cryptography
-pymysql
+psycopg2

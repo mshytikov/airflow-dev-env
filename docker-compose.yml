@@ -1,34 +1,36 @@
-version: '2'
-services:
-  common:
-    image: python:3.6
-    working_dir: /workdir
-    environment:
-      PYTHONUSERBASE: /workdir/.pip
-      PYTHONDONTWRITEBYTECODE: 1
-      PATH: "/workdir/.pip/bin/:/bin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin"
-      HISTFILE: docker-compose/.bash_history
-      AIRFLOW_HOME: /workdir/airflow
-      AIRFLOW__CORE__SQL_ALCHEMY_CONN: postgres+psycopg2://airflow:airflow@db/airflow
-      AIRFLOW__CORE__EXECUTOR: LocalExecutor
-      AIRFLOW_GPL_UNIDECODE: 'yes'
-    command: ./bin/setup
-    volumes:
-      - .:/workdir
+version: '3.6'
 
+x-common:
+  &common
+  image: python:3.8
+  working_dir: /workdir
+  environment:
+    PYTHONUSERBASE: /workdir/.pip
+    PYTHONDONTWRITEBYTECODE: 1
+    PATH: "/workdir/.pip/bin/:/bin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin"
+    HISTFILE: docker-compose/.bash_history
+    AIRFLOW_HOME: /workdir/airflow
+    AIRFLOW__CORE__SQL_ALCHEMY_CONN: postgres+psycopg2://airflow:airflow@db/airflow
+    AIRFLOW__CORE__EXECUTOR: LocalExecutor
+    AIRFLOW_GPL_UNIDECODE: 'yes'
+  command: ./bin/setup
+  volumes:
+    - .:/workdir
+
+services:
   app:
-    extends: common
+    << : *common
     command: airflow webserver
-    links:
-      - db
     ports:
       - 8080:8080
+    links:
+    - db
 
   scheduler:
-    extends: common
-    links:
-      - db
+    << : *common
     command: airflow scheduler
+    links:
+    - db
 
   db:
     image: postgres:11

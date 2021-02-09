@@ -16,6 +16,8 @@ docker-compose up app scheduler
 
 UI should be available on http://localhost:8080
 
+User `test` password `test`
+
 Run Airflow via CLI just enter a container
 
 ```

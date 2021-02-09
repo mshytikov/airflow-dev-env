@@ -5,7 +5,11 @@ set -o errexit
 pip install --user -r requirements-dev.txt
 
 # Install deps
-airflow initdb
+airflow db init
+
+# Setup default user
+airflow users create --lastname test --firstname test --username test\
+  --email "test@mail.com" --role Admin --password test
 
 # Run tests
 pytest
